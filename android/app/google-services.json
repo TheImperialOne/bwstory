@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "100332376572",
+    "project_id": "bwstory",
+    "storage_bucket": "bwstory.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:100332376572:android:c077581acf750090e02279",
+        "android_client_info": {
+          "package_name": "com.example.bwstory"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4eLyUTtV6GwB8TiECKhG0LjsOAJm8fks"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
