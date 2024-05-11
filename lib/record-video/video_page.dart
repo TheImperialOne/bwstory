@@ -1,8 +1,9 @@
 import 'dart:io';
+import 'dart:typed_data';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class VideoPage extends StatefulWidget {
   final String filePath;
@@ -15,6 +16,13 @@ class VideoPage extends StatefulWidget {
 
 class _VideoPageState extends State<VideoPage> {
   late VideoPlayerController _videoPlayerController;
+  Uint8List? _thumbnailBytes;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeVideoPlayer();
+  }
 
   @override
   void dispose() {
@@ -22,11 +30,23 @@ class _VideoPageState extends State<VideoPage> {
     super.dispose();
   }
 
-  Future _initVideoPlayer() async {
+  Future<void> _initializeVideoPlayer() async {
     _videoPlayerController = VideoPlayerController.file(File(widget.filePath));
     await _videoPlayerController.initialize();
     await _videoPlayerController.setLooping(true);
-    await _videoPlayerController.play();
+  }
+
+  Future<void> _captureThumbnail() async {
+    final thumbnailBytes = await VideoThumbnail.thumbnailData(
+      video: widget.filePath,
+      imageFormat: ImageFormat.JPEG,
+      maxWidth: 128,
+      quality: 25,
+    );
+
+    setState(() {
+      _thumbnailBytes = thumbnailBytes;
+    });
   }
 
   @override
@@ -48,15 +68,32 @@ class _VideoPageState extends State<VideoPage> {
         ],
       ),
       extendBodyBehindAppBar: true,
-      body: FutureBuilder(
-        future: _initVideoPlayer(),
-        builder: (context, state) {
-          if (state.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else {
-            return VideoPlayer(_videoPlayerController);
-          }
-        },
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          VideoPlayer(_videoPlayerController),
+          IconButton(
+            icon: Icon(
+              _videoPlayerController.value.isPlaying ? Icons.pause : Icons.play_arrow,
+              size: 50,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              setState(() {
+                if (_videoPlayerController.value.isPlaying) {
+                  _videoPlayerController.pause();
+                } else {
+                  _videoPlayerController.play();
+                }
+              });
+            },
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _captureThumbnail,
+        tooltip: 'Capture Thumbnail',
+        child: Icon(Icons.camera),
       ),
     );
   }

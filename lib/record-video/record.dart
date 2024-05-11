@@ -17,8 +17,8 @@ class _CameraPageState extends State<CameraPage> {
 
   @override
   void initState() {
-    _initCamera();
     super.initState();
+    _initCamera(); // Preload camera
   }
 
   @override
@@ -83,6 +83,7 @@ class _CameraPageState extends State<CameraPage> {
 
     return await Geolocator.getCurrentPosition();
   }
+
   _switchCamera() async {
     final cameras = await availableCameras();
     final newCamera = _cameraController.description == cameras[0] ? cameras[1] : cameras[0];
