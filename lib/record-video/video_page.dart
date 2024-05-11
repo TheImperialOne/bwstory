@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
+import 'add_data.dart';
+
 class VideoPage extends StatefulWidget {
   final String filePath;
 
@@ -43,7 +45,6 @@ class _VideoPageState extends State<VideoPage> {
       maxWidth: 128,
       quality: 25,
     );
-
     setState(() {
       _thumbnailBytes = thumbnailBytes;
     });
@@ -59,10 +60,16 @@ class _VideoPageState extends State<VideoPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
-            onPressed: () {
+            onPressed: () async {
+              await _captureThumbnail(); // Capture thumbnail
               _videoPlayerController.pause();
               _videoPlayerController.setLooping(false);
-              Navigator.pushNamed(context, 'form');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VideoFormPage(thumbnailBytes: _thumbnailBytes),
+                ),
+              );
             },
           )
         ],
@@ -89,11 +96,6 @@ class _VideoPageState extends State<VideoPage> {
             },
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _captureThumbnail,
-        tooltip: 'Capture Thumbnail',
-        child: Icon(Icons.camera),
       ),
     );
   }

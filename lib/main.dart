@@ -68,7 +68,6 @@ class _MyAppState extends State<MyApp> {
         'verify': (context) => const MyVerify(),
         'home': (context) => const Home(),
         'record': (context) => const CameraPage(),
-        'form': (context) => const VideoFormPage()
       },
       home: const MyPhone(),
     );

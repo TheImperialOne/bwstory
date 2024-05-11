@@ -1,7 +1,16 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:geolocator_platform_interface/src/models/position.dart';
+
+import '../geolocator.dart';
 
 class VideoFormPage extends StatefulWidget {
-  const VideoFormPage({Key? key}) : super(key: key);
+  final Uint8List? thumbnailBytes; // Pass the thumbnail bytes as a parameter
+  final Position? location; // Pass the geolocation data as a parameter
+
+  const VideoFormPage({Key? key, this.thumbnailBytes, this.location})
+      : super(key: key);
 
   @override
   _VideoFormPageState createState() => _VideoFormPageState();
@@ -33,7 +42,14 @@ class _VideoFormPageState extends State<VideoFormPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 30), // Add space at the top
+              SizedBox(height: 30),
+              // Add space at the top
+              if (widget.thumbnailBytes !=
+                  null) // Check if thumbnailBytes is not null
+                Image.memory(widget.thumbnailBytes!),
+              // Display the thumbnail image
+              SizedBox(height: 20),
+              // Add space between title and form
               Text(
                 'Add Video',
                 style: TextStyle(
@@ -42,7 +58,8 @@ class _VideoFormPageState extends State<VideoFormPage> {
                   color: Colors.black,
                 ),
               ),
-              SizedBox(height: 20), // Add space between title and form
+              SizedBox(height: 20),
+              // Add space between title and form
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Title',
@@ -60,7 +77,19 @@ class _VideoFormPageState extends State<VideoFormPage> {
                   });
                 },
               ),
-              SizedBox(height: 20), // Add space between fields
+              SizedBox(height: 20),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Geolocation',
+                  border: OutlineInputBorder(), // Add border
+                ),
+                initialValue: GeolocationData.currentPosition != null
+                    ? 'Latitude: ${GeolocationData.currentPosition!.latitude}, Longitude: ${GeolocationData.currentPosition!.longitude}'
+                    : 'Geolocation not available',
+                enabled: false, // Make it uneditable
+              ),
+              SizedBox(height: 20),
+              // Add space between fields
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Description',
@@ -78,7 +107,20 @@ class _VideoFormPageState extends State<VideoFormPage> {
                   });
                 },
               ),
-              SizedBox(height: 20), // Add space between fields
+              SizedBox(height: 20),
+              // Add space between fields
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Geolocation',
+                  border: OutlineInputBorder(), // Add border
+                ),
+                initialValue: widget.location != null
+                    ? 'Latitude: ${widget.location!.latitude}, Longitude: ${widget.location!.longitude}'
+                    : '', // Display geolocation if available
+                enabled: false, // Make it uneditable
+              ),
+              SizedBox(height: 20),
+              // Add space between fields
               DropdownButtonFormField<String>(
                 value: _selectedCategory.isNotEmpty ? _selectedCategory : null,
                 decoration: InputDecoration(
@@ -103,7 +145,8 @@ class _VideoFormPageState extends State<VideoFormPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 20), // Add space between fields
+              SizedBox(height: 20),
+              // Add space between fields
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {

@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:bwstory/record-video/video_page.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../geolocator.dart';
+import 'add_data.dart';
+
 class CameraPage extends StatefulWidget {
   const CameraPage({Key? key}) : super(key: key);
 
@@ -14,6 +17,7 @@ class _CameraPageState extends State<CameraPage> {
   bool _isLoading = true;
   bool _isRecording = false;
   late CameraController _cameraController;
+  Position? _currentLocation; // Declare _currentLocation variable
 
   @override
   void initState() {
@@ -44,11 +48,16 @@ class _CameraPageState extends State<CameraPage> {
         builder: (_) => VideoPage(filePath: file.path),
       );
       Navigator.push(context, route);
+      // Fetch location
+      Position? position = await _getLocation();
+      if (position != null) {
+        GeolocationData.currentPosition = position;
+      }
     } else {
       // Fetch location
       Position? position = await _getLocation();
       if (position != null) {
-        // Use position.latitude and position.longitude to store the location
+        GeolocationData.currentPosition = position;
       }
 
       await _cameraController.prepareForVideoRecording();
@@ -56,7 +65,6 @@ class _CameraPageState extends State<CameraPage> {
       setState(() => _isRecording = true);
     }
   }
-
   Future<Position?> _getLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
