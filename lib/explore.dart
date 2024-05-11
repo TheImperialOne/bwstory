@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -12,5 +13,6 @@ class _ExploreState extends State<Explore>{
   @override
   Widget build(BuildContext context) {
     return const Text('Explore');
+
   }
 }

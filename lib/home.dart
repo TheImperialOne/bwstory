@@ -1,6 +1,5 @@
 import 'package:bwstory/profile.dart';
 import 'package:bwstory/search.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'explore.dart';
@@ -40,7 +39,9 @@ class _HomeState extends State<Home> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.black,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, 'record');
+        },
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomAppBar(

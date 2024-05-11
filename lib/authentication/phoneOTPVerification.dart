@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class PhoneOTPVerification extends StatefulWidget {
-  const PhoneOTPVerification({Key? key}) : super(key: key);
+  const PhoneOTPVerification({super.key});
 
   @override
   State<PhoneOTPVerification> createState() => _PhoneOTPVerificationState();
@@ -25,7 +25,7 @@ class _PhoneOTPVerificationState extends State<PhoneOTPVerification> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Firebase Phone OTP Authentication"),
+        title: const Text("Firebase Phone OTP Authentication"),
       ),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
@@ -33,7 +33,7 @@ class _PhoneOTPVerificationState extends State<PhoneOTPVerification> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             inputTextField("Contact Number", phoneNumber, context),
-            visible ? inputTextField("OTP", otp, context) : SizedBox(),
+            visible ? inputTextField("OTP", otp, context) : const SizedBox(),
             !visible ? SendOTPButton("Send OTP") : SubmitOTPButton("Submit"),
           ],
         ),
@@ -56,7 +56,7 @@ class _PhoneOTPVerificationState extends State<PhoneOTPVerification> {
 
   Widget inputTextField(String labelText, TextEditingController textEditingController, BuildContext context) =>
       Padding(
-        padding: EdgeInsets.all(10.00),
+        padding: const EdgeInsets.all(10.00),
         child: SizedBox(
           width: MediaQuery.of(context).size.width / 1.5,
           child: TextFormField(
@@ -64,15 +64,15 @@ class _PhoneOTPVerificationState extends State<PhoneOTPVerification> {
             controller: textEditingController,
             decoration: InputDecoration(
               hintText: labelText,
-              hintStyle: TextStyle(color: Colors.blue),
+              hintStyle: const TextStyle(color: Colors.blue),
               filled: true,
               fillColor: Colors.blue[100],
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.transparent),
+                borderSide: const BorderSide(color: Colors.transparent),
                 borderRadius: BorderRadius.circular(5.5),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.transparent),
+                borderSide: const BorderSide(color: Colors.transparent),
                 borderRadius: BorderRadius.circular(5.5),
               ),
             ),

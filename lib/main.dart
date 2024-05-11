@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:bwstory/record-video/add_data.dart';
+import 'package:bwstory/record-video/record.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -18,10 +20,12 @@ void main() async {
           messagingSenderId: "100332376572",
           appId: "1:100332376572:web:6ce633152a17d91ee02279",
           measurementId: "G-T1V8CV3XMY"));
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   // This widget is the root of your application.
 
   @override
@@ -62,7 +66,9 @@ class _MyAppState extends State<MyApp> {
       routes: {
         'phone': (context) => const MyPhone(),
         'verify': (context) => const MyVerify(),
-        'home': (context) => const Home()
+        'home': (context) => const Home(),
+        'record': (context) => const CameraPage(),
+        'form': (context) => const VideoFormPage()
       },
       home: const MyPhone(),
     );
