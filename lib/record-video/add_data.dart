@@ -161,7 +161,7 @@ class _VideoFormPageState extends State<VideoFormPage> {
                           print('Description: $_description');
                           print('Category: $_selectedCategory');
                           Video newVideo = Video(
-                            path: widget.videoPath,
+                            videoURL: widget.videoPath,
                             // Assuming widget.addressString contains the path to the video
                             title: _title,
                             description: _description,
@@ -200,16 +200,14 @@ class _VideoFormPageState extends State<VideoFormPage> {
       String videoFileName = DateTime.now().millisecondsSinceEpoch.toString();
       firebase_storage.Reference videoRef = firebase_storage.FirebaseStorage.instance
           .ref()
-          .child(phoneNumber!)
           .child('videos')
-          .child(videoFileName + '.mp4');
+          .child(phoneNumber!+videoFileName + '.mp4');
       await videoRef.putFile(videoFile);
 
       // Upload thumbnail image to Firebase Storage
-      String thumbnailFileName = 'thumbnail_$videoFileName.jpg'; // Assuming thumbnail format is JPEG
+      String thumbnailFileName = '$phoneNumber'+'$videoFileName.jpg'; // Assuming thumbnail format is JPEG
       firebase_storage.Reference thumbnailRef = firebase_storage.FirebaseStorage.instance
           .ref()
-          .child(phoneNumber)
           .child('thumbnails')
           .child(thumbnailFileName);
       await thumbnailRef.putData(thumbnailBytes);
@@ -234,9 +232,8 @@ class _VideoFormPageState extends State<VideoFormPage> {
       // Upload the JSON object as a file to Firebase Storage
       firebase_storage.Reference metadataRef = firebase_storage.FirebaseStorage.instance
           .ref()
-          .child(phoneNumber)
           .child('metadata')
-          .child(videoFileName + '.json');
+          .child(phoneNumber!+videoFileName + '.json');
       await metadataRef.putData(Uint8List.fromList(utf8.encode(jsonString)));
 
       print('Video, thumbnail, and metadata uploaded to Firebase Storage successfully!');

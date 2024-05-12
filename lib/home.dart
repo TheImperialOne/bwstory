@@ -33,9 +33,9 @@ class _HomeState extends State<Home> {
             _selectedIndex = index; // Update the selected index when page changes
           });
         },
-        children: const <Widget>[
+        children: <Widget>[
           Center(
-            child: Explore(),
+            child: VideoListScreen(),
           ),
           Center(
             child: Search(),
