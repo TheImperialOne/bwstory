@@ -1,10 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:bwstory/record-video/video_page.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../geolocator.dart';
-import 'add_data.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({Key? key}) : super(key: key);
@@ -17,12 +17,14 @@ class _CameraPageState extends State<CameraPage> {
   bool _isLoading = true;
   bool _isRecording = false;
   late CameraController _cameraController;
-  Position? _currentLocation; // Declare _currentLocation variable
+  late String _address;
 
   @override
   void initState() {
     super.initState();
     _initCamera(); // Preload camera
+    _address = 'Fetching address...';
+    _fetchAddress();
   }
 
   @override
@@ -38,16 +40,35 @@ class _CameraPageState extends State<CameraPage> {
     await _cameraController.initialize();
     setState(() => _isLoading = false);
   }
-
+  Future<void> _fetchAddress() async {
+    try {
+      Position position = await GeolocationData.getCurrentLocation();
+      // Use the fetched position to fetch the address
+      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+      if (placemarks.isNotEmpty) {
+        Placemark placemark = placemarks.first;
+        setState(() {
+          _address = '${placemark.street}, ${placemark.locality}, ${placemark.country}';
+          print("Address: "+_address);
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _address = 'Address not available';
+      });
+      print("Error fetching address: $e");
+    }
+  }
   _recordVideo() async {
     if (_isRecording) {
       final file = await _cameraController.stopVideoRecording();
       setState(() => _isRecording = false);
       final route = MaterialPageRoute(
         fullscreenDialog: true,
-        builder: (_) => VideoPage(filePath: file.path),
+        builder: (_) => VideoPage(filePath: file.path,address: _address,),
       );
       Navigator.push(context, route);
+
       // Fetch location
       Position? position = await _getLocation();
       if (position != null) {

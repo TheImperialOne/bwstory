@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:bwstory/record-video/add_data.dart';
 import 'package:bwstory/record-video/record.dart';
+import 'package:bwstory/record-video/success.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -68,6 +68,7 @@ class _MyAppState extends State<MyApp> {
         'verify': (context) => const MyVerify(),
         'home': (context) => const Home(),
         'record': (context) => const CameraPage(),
+        'success': (context) => SuccessPage()
       },
       home: const MyPhone(),
     );

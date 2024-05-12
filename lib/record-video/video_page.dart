@@ -9,8 +9,9 @@ import 'add_data.dart';
 
 class VideoPage extends StatefulWidget {
   final String filePath;
+  final String address;
 
-  const VideoPage({Key? key, required this.filePath}) : super(key: key);
+  const VideoPage({Key? key, required this.filePath, required this.address}) : super(key: key);
 
   @override
   _VideoPageState createState() => _VideoPageState();
@@ -67,7 +68,7 @@ class _VideoPageState extends State<VideoPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => VideoFormPage(thumbnailBytes: _thumbnailBytes),
+                  builder: (context) => VideoFormPage(thumbnailBytes: _thumbnailBytes, addressString: widget.address, videoPath: widget.filePath),
                 ),
               );
             },
