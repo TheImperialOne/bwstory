@@ -171,7 +171,7 @@ class _VideoFormPageState extends State<VideoFormPage> {
                           );
                           File videoFile = File(widget
                               .videoPath); // Assuming widget.addressString contains the path to the video file
-                          await uploadVideoAndMetadata(videoFile, newVideo);
+                          await uploadVideoAndMetadata(videoFile, widget.thumbnailBytes!, newVideo);
                           setState(() => _isLoading = false);
                           Navigator.pushNamed(context, 'success');
                         }
@@ -191,26 +191,32 @@ class _VideoFormPageState extends State<VideoFormPage> {
     }
   }
 
-  Future<void> uploadVideoAndMetadata(File videoFile, Video video) async {
+  Future<void> uploadVideoAndMetadata(File videoFile, Uint8List thumbnailBytes, Video video) async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
-
-// Get the phone number
       String? phoneNumber = user?.phoneNumber;
+
       // Upload video file to Firebase Storage
-      String videoFileName =
-          DateTime.now().millisecondsSinceEpoch.toString(); // Unique filename
-      firebase_storage.Reference videoRef = firebase_storage
-          .FirebaseStorage.instance
+      String videoFileName = DateTime.now().millisecondsSinceEpoch.toString();
+      firebase_storage.Reference videoRef = firebase_storage.FirebaseStorage.instance
           .ref()
           .child(phoneNumber!)
           .child('videos')
-          .child(videoFileName + '.mp4'); // Specify the folder and filename
-      await videoRef
-          .putFile(videoFile); // Upload the video file to Firebase Storage
+          .child(videoFileName + '.mp4');
+      await videoRef.putFile(videoFile);
 
-      // Get the download URL of the uploaded file
+      // Upload thumbnail image to Firebase Storage
+      String thumbnailFileName = 'thumbnail_$videoFileName.jpg'; // Assuming thumbnail format is JPEG
+      firebase_storage.Reference thumbnailRef = firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child(phoneNumber)
+          .child('thumbnails')
+          .child(thumbnailFileName);
+      await thumbnailRef.putData(thumbnailBytes);
+
+      // Get the download URLs of the uploaded files
       String videoDownloadURL = await videoRef.getDownloadURL();
+      String thumbnailDownloadURL = await thumbnailRef.getDownloadURL();
 
       // Create a JSON object with the video metadata
       Map<String, dynamic> videoMetadata = {
@@ -219,22 +225,23 @@ class _VideoFormPageState extends State<VideoFormPage> {
         'location': video.location,
         'category': video.category,
         'videoURL': videoDownloadURL,
+        'thumbnailURL': thumbnailDownloadURL, // Add thumbnail URL to metadata
       };
+
       // Convert the JSON object to a string
       String jsonString = json.encode(videoMetadata);
 
       // Upload the JSON object as a file to Firebase Storage
-      firebase_storage.Reference metadataRef = firebase_storage
-          .FirebaseStorage.instance
+      firebase_storage.Reference metadataRef = firebase_storage.FirebaseStorage.instance
           .ref()
           .child(phoneNumber)
           .child('metadata')
-          .child(videoFileName +
-              '.json'); // Specify the folder and filename for metadata
+          .child(videoFileName + '.json');
       await metadataRef.putData(Uint8List.fromList(utf8.encode(jsonString)));
-      print('Video and metadata uploaded to Firebase Storage successfully!');
+
+      print('Video, thumbnail, and metadata uploaded to Firebase Storage successfully!');
     } catch (e) {
-      print('Error uploading video and metadata to Firebase Storage: $e');
+      print('Error uploading video, thumbnail, and metadata to Firebase Storage: $e');
     }
   }
 }

@@ -14,13 +14,25 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final PageController pageController = PageController(initialPage: 0);
-  late int _selectedIndex = 0;
+  int _selectedIndex = 0; // Change to non-late and remove 'late' keyword
+
+  @override
+  void dispose() {
+    pageController.dispose(); // Dispose the page controller
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
       body: PageView(
         controller: pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _selectedIndex = index; // Update the selected index when page changes
+          });
+        },
         children: const <Widget>[
           Center(
             child: Explore(),
@@ -63,7 +75,6 @@ class _HomeState extends State<Home> {
               });
             },
             items: const [
-
               BottomNavigationBarItem(
                 icon: Icon(Icons.home_outlined),
                 label: 'Explore',
@@ -87,3 +98,4 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
